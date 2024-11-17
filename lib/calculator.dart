@@ -15,26 +15,11 @@ class _MyCalculatorState extends State<MyCalculator> {
   String result = "0";
 
   List<String> buttonsList = [
-    "C",
-    "(",
-    ")",
-    "/",
-    "7",
-    "8",
-    "9",
-    "*",
-    "4",
-    "5",
-    "6",
-    "+",
-    "1",
-    "2",
-    "3",
-    "-",
-    "AC",
-    "0",
-    ".",
-    "=",
+    "C", "(", ")", "/", 
+    "7", "8", "9", "*", 
+    "4", "5", "6", "+", 
+    "1", "2", "3", "-", 
+    "AC", "0", ".", "=",
   ];
 
   bool darkMode = false;
@@ -45,27 +30,23 @@ class _MyCalculatorState extends State<MyCalculator> {
       backgroundColor: darkMode ? darkColor : lightColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 10),
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.02,
+            vertical: MediaQuery.of(context).size.height * 0.01,
+          ),
           child: Column(
             children: [
               GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      darkMode ? darkMode = false : darkMode = true;
-                    });
-                  },
-                  child: _switchMode()),
-              const SizedBox(
-                height: 20,
+                onTap: () {
+                  setState(() {
+                    darkMode = !darkMode;
+                  });
+                },
+                child: _switchMode(),
               ),
-              Flexible(
-                flex: 2,
-                child: resultWidget(),
-              ),
-              Flexible(
-                flex: 5,
-                child: buttonWidget(),
-              )
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Flexible(flex: 3, child: resultWidget()),
+              Flexible(flex: 7, child: buttonWidget()),
             ],
           ),
         ),
@@ -75,38 +56,45 @@ class _MyCalculatorState extends State<MyCalculator> {
 
   Widget _switchMode() {
     return NeuContainer(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        darkMode: darkMode,
-        borderRadius: BorderRadius.circular(40),
-        margin: const EdgeInsets.all(5),
-        child: SizedBox(
-          width: 70,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(
-                Icons.wb_sunny,
-                color: darkMode ? Colors.grey : Colors.redAccent,
-              ),
-              Icon(
-                Icons.nightlight_round,
-                color: darkMode ? Colors.green : Colors.grey,
-              ),
-            ],
-          ),
-        ));
+      padding: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.01,
+        horizontal: MediaQuery.of(context).size.width * 0.03,
+      ),
+      darkMode: darkMode,
+      borderRadius: BorderRadius.circular(40),
+      margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.2,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Icon(
+              Icons.wb_sunny,
+              color: darkMode ? Colors.grey : Colors.redAccent,
+            ),
+            Icon(
+              Icons.nightlight_round,
+              color: darkMode ? Colors.green : Colors.grey,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget resultWidget() {
+    double fontSizeInput = MediaQuery.of(context).size.width * 0.06;
+    double fontSizeResult = MediaQuery.of(context).size.width * 0.1;
+
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
           alignment: Alignment.centerRight,
           child: Text(
             userInput,
             style: TextStyle(
-              fontSize: 25,
+              fontSize: fontSizeInput,
               color: darkMode ? Colors.green : Colors.grey,
             ),
           ),
@@ -115,22 +103,24 @@ class _MyCalculatorState extends State<MyCalculator> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 15.0),
+              padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.03,
+              ),
               child: Text(
                 '=',
                 style: TextStyle(
-                  fontSize: 35,
+                  fontSize: MediaQuery.of(context).size.width * 0.08,
                   color: darkMode ? Colors.green : Colors.grey,
                 ),
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
               alignment: Alignment.centerRight,
               child: Text(
                 result,
                 style: TextStyle(
-                  fontSize: 55,
+                  fontSize: fontSizeResult,
                   fontWeight: FontWeight.bold,
                   color: darkMode ? Colors.white : Colors.black,
                 ),
@@ -144,8 +134,10 @@ class _MyCalculatorState extends State<MyCalculator> {
 
   Widget buttonWidget() {
     return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
+        crossAxisSpacing: MediaQuery.of(context).size.width * 0.02,
+        mainAxisSpacing: MediaQuery.of(context).size.width * 0.02,
       ),
       itemCount: buttonsList.length,
       itemBuilder: (BuildContext context, int index) {
@@ -154,39 +146,41 @@ class _MyCalculatorState extends State<MyCalculator> {
     );
   }
 
-  Widget buttons(String text, {double padding = 20}) {
+  Widget buttons(String text) {
+    double buttonSize = MediaQuery.of(context).size.width * 0.18;
     return NeuContainer(
-        padding: const EdgeInsets.all(0),
-        darkMode: darkMode,
-        borderRadius: BorderRadius.circular(40),
-        margin: EdgeInsets.all(padding / 2),
-        child: Theme(
-          data: ThemeData(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          child: MaterialButton(
-            splashColor: Colors.transparent,
-            onPressed: () {
-              setState(() {
-                handleButtonPressed(text);
-              });
-            },
-            child: SizedBox(
-              width: padding * 2,
-              height: padding * 2,
-              child: Center(
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    color: getColor(text),
-                    fontSize: 30,
-                  ),
+      padding: const EdgeInsets.all(0),
+      darkMode: darkMode,
+      borderRadius: BorderRadius.circular(40),
+      margin: EdgeInsets.all(buttonSize * 0.1),
+      child: Theme(
+        data: ThemeData(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: MaterialButton(
+          splashColor: Colors.transparent,
+          onPressed: () {
+            setState(() {
+              handleButtonPressed(text);
+            });
+          },
+          child: SizedBox(
+            width: buttonSize,
+            height: buttonSize,
+            child: Center(
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: getColor(text),
+                  fontSize: MediaQuery.of(context).size.width * 0.06,
                 ),
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   handleButtonPressed(String text) {
@@ -196,7 +190,7 @@ class _MyCalculatorState extends State<MyCalculator> {
       return;
     }
 
-    if (text == "C" && userInput != '') {
+    if (text == "C" && userInput.isNotEmpty) {
       userInput = userInput.substring(0, userInput.length - 1);
       return;
     }
@@ -207,7 +201,7 @@ class _MyCalculatorState extends State<MyCalculator> {
       return;
     }
 
-    userInput = userInput + text;
+    userInput += text;
   }
 
   String calculate() {
@@ -221,13 +215,7 @@ class _MyCalculatorState extends State<MyCalculator> {
   }
 
   getColor(String text) {
-    if (text == '/' ||
-        text == "*" ||
-        text == "+" ||
-        text == "-" ||
-        text == "=" ||
-        text == "(" ||
-        text == ")") {
+    if (text == '/' || text == "*" || text == "+" || text == "-" || text == "=" || text == "(" || text == ")") {
       return darkMode ? Colors.green : Colors.redAccent;
     }
     if (text == "C" || text == "AC") {
